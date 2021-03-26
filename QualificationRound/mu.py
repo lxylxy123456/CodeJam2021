@@ -66,6 +66,8 @@ def solve_range(X, Y, nques, left, right):
 		return 0
 
 def solve_extra(X, Y, S):
+	if len(S) == 1:
+		return 0
 	prev = 'X'
 	prev_let_i = -1
 	prev_let = 'X'
