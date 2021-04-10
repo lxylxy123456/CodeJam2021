@@ -21,6 +21,21 @@ for test in range(T):
 	total = 0
 	for p, n in zip(P, N):
 		total += p * n
+
+	ans = 0
+	def recu(prod, sum_, level):
+		global ans
+		if level == M:
+			if prod == sum_:
+				ans = max(sum_, ans)
+			return
+		if prod > sum_:
+			return
+		for i in range(N[level] + 1):
+			recu(prod * P[level]**i, sum_ - P[level] * i, level + 1)
+
+	recu(1, total, 0)
+	'''
 	ans = 0
 	for choices in itertools.product(*map(lambda x: range(x + 1), N)):
 		prod = 1
@@ -30,5 +45,6 @@ for test in range(T):
 			sum_ -= i * j
 		if sum_ == prod:
 			ans = max(sum_, ans)
+	'''
 	print('Case #%d:' % (test + 1), ans)
 
