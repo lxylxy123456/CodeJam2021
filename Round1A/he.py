@@ -103,6 +103,12 @@ for test in range(T):
 		# S1 = xs + x1 + n0 - x0 + n2 - x2
 		# S2 = xs + x2 + n1 - x1 + n0 - x0
 		# solve([S0 = xs + x0 + n1 - x1 + n2 - x2, S1 = xs + x1 + n0 - x0 + n2 - x2, S2 = xs + x2 + n1 - x1 + n0 - x0], [x1, x2, x0, xs]);
+		for xs in range(Q + 1):
+			x0 = (n2+n1+2*n0-S[2]-S[1]+2*xs)//2
+			x1 = (n2+2*n1+n0-S[2]-S[0]+2*xs)//2
+			x2 = (2*n2+n1+n0-S[1]-S[0]+2*xs)//2
+			print(xs, x0, x1, x2)
+
 		print(nsame, n0, n1, n2, S)
 		0/0
 	print('Case #%d:' % (test + 1), ansl, ansr)
