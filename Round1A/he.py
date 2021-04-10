@@ -1,8 +1,11 @@
 try:
 	import os, sys
 	stdin = sys.stdin
-	# stdin = open('s.txt')
-	stdin = open(os.path.splitext(__file__)[0] + '.txt')
+	if len(sys.argv) > 1:
+		stdin = open(sys.argv[1])
+	else:
+		# stdin = open('s.txt')
+		stdin = open(os.path.splitext(__file__)[0] + '.txt')
 	input = lambda: stdin.readline()[:-1]
 except Exception:
 	pass
@@ -67,6 +70,40 @@ for test in range(T):
 				else:
 					ansl += i
 		ansr = '%d/1' % (esame + max(x, y))
-	ans = repr((N, Q, A, S))
+	elif N == 3:
+		nsame, n2, n0, n1 = 0, 0, 0, 0
+		Amaj = []
+		Adif = []
+		for i, j, k in zip(*A):
+			if i == j:
+				if j == k:
+					nsame += 1
+					Adif.append(-1)
+				else:
+					n2 += 1
+					Adif.append(2)
+				Amaj.append(i)
+			else:
+				if j == k:
+					n0 += 1
+					Adif.append(0)
+				else:
+					n1 += 1
+					Adif.append(1)
+				Amaj.append(k)
+		assert nsame == Adif.count(-1)
+		assert n0 == Adif.count(0)
+		assert n1 == Adif.count(1)
+		assert n2 == Adif.count(2)
+		# x0 = number of correct in n0
+		# x1 = number of correct in n1
+		# x2 = number of correct in n2
+		# xs = number of all correct
+		# S0 = xs + x0 + n1 - x1 + n2 - x2
+		# S1 = xs + x1 + n0 - x0 + n2 - x2
+		# S2 = xs + x2 + n1 - x1 + n0 - x0
+		# solve([S0 = xs + x0 + n1 - x1 + n2 - x2, S1 = xs + x1 + n0 - x0 + n2 - x2, S2 = xs + x2 + n1 - x1 + n0 - x0], [x1, x2, x0, xs]);
+		print(nsame, n0, n1, n2, S)
+		0/0
 	print('Case #%d:' % (test + 1), ansl, ansr)
 
