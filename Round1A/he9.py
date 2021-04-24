@@ -94,7 +94,77 @@ def solve2(N, Q, A, S):
 	ansr = '%d/%d' % (ansr.numerator, ansr.denominator)
 	return ansl, ansr	
 
-import operator
+def combination(N, M):
+	assert N >= M
+	return math.factorial(N) // (math.factorial(M) * math.factorial(N - M))
+
+def solve3(N, Q, A, S):
+	assert N == 3
+	c = Counter(zip(*A))
+	q1 = c['T', 'T', 'T'] + c['F', 'F', 'F']
+	q2 = c['T', 'T', 'F'] + c['F', 'F', 'T']
+	q3 = c['T', 'F', 'T'] + c['F', 'T', 'F']
+	q4 = c['T', 'F', 'F'] + c['F', 'T', 'T']
+	total_count = 0
+	# si0: score in type i questions where 0 are the same answer as A[0]
+	# siq: score in type i questions where q1 are the same answer as A[0]
+	s10, s1q = 0, 0
+	s20, s2q = 0, 0
+	s30, s3q = 0, 0
+	s40, s4q = 0, 0
+	for t1 in range(q1 + 1):	# number of q1 questions that A[0] is correct
+		# display2d:false$
+		# solve([S[0] = t1 + t2 + t3 + t4, 
+		#		S[1] = t1 + t2 + q3 - t3 + q4 - t4,
+		#		S[2] = t1 + q2 - t2 + t3 + q4 - t4], [t2, t3, t4]);
+		t2 = -(2*t1+q4+q3-S[1]-S[0])
+		assert t2 % 2 == 0
+		t2 //= 2
+		t3 = -(2*t1+q4+q2-S[2]-S[0])
+		assert t3 % 2 == 0
+		t3 //= 2
+		t4 = (2*t1+2*q4+q3+q2-S[2]-S[1])
+		assert t4 % 2 == 0
+		t4 //= 2
+		if not t2 in range(q2 + 1): continue
+		if not t3 in range(q3 + 1): continue
+		if not t4 in range(q4 + 1): continue
+		count = (combination(q1, t1) * combination(q2, t2) *
+			combination(q3, t3) * combination(q4, t4))
+		total_count += count
+		s1q += t1 * count
+		s10 += (q1 - t1) * count
+		s2q += t2 * count
+		s20 += (q2 - t2) * count
+		s3q += t3 * count
+		s30 += (q3 - t3) * count
+		s4q += t4 * count
+		s40 += (q4 - t4) * count
+	# si0: score in type i questions where 0 are the same answer as A[0]
+	# siq: score in type i questions where q1 are the same answer as A[0]
+	ansl = ''
+	for a0, a1, a2 in zip(*A):
+		if (a0, a1, a2) in (('T', 'T', 'T'), ('F', 'F', 'F')):
+			if s1q > s10:	ansl += a0
+			else:			ansl += REV[a0]
+		elif (a0, a1, a2) in (('T', 'T', 'F'), ('F', 'F', 'T')):
+			if s2q > s20:	ansl += a0
+			else:			ansl += REV[a0]
+		elif (a0, a1, a2) in (('T', 'F', 'T'), ('F', 'T', 'F')):
+			if s3q > s30:	ansl += a0
+			else:			ansl += REV[a0]
+		elif (a0, a1, a2) in (('T', 'F', 'F'), ('F', 'T', 'T')):
+			if s4q > s40:	ansl += a0
+			else:			ansl += REV[a0]
+		else:
+			raise ValueError
+	num = max(s10, s1q) + max(s20, s2q) + max(s30, s3q) + max(s40, s4q)
+	ansr = Fraction(num, total_count)
+	ansr = '%d/%d' % (ansr.numerator, ansr.denominator)
+	return ansl, ansr
+
+import operator, math
+from collections import Counter
 from fractions import Fraction
 REV = {'T': 'F', 'F': 'T'}
 
@@ -107,18 +177,28 @@ for test in range(T):
 		a, s = input().split()
 		A.append(a)
 		S.append(int(s))
-	while N >= 2 and A[0] == A[1]:
-		N = 1
-		assert S[0] == S[1]
-		S.pop()
-		A.pop()
+#	while N >= 2 and A[0] == A[1]:
+#		N = 1
+#		assert S[0] == S[1]
+#		S.pop()
+#		A.pop()
 	if N == 1:
 		S.append(S[-1])
 		A.append(A[-1])
 		N += 1
+
 	if N == 2:
-		ansl, ansr = solve2(N, Q, A, S)
-	elif N == 3:
+		S.append(S[-1])
+		A.append(A[-1])
+		N += 1
+	if N == 3:
+
+#	if N == 2:
+#		ansl, ansr = solve2(N, Q, A, S)
+#	elif N == 3:
+
+		ansl, ansr = solve3(N, Q, A, S)
+	else:
 		# p[q] = p(answer of question q is T)
 		# pTTT = p(answer is T | A[0..2] gives TTT)
 		# pTTF
