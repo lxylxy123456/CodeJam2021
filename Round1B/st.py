@@ -10,7 +10,7 @@ try:
 except Exception:
 	pass
 
-# import math, sys
+import math # sys
 # sys.setrecursionlimit(100000000)
 from collections import defaultdict
 # A = list(map(int, input().split()))
@@ -41,6 +41,7 @@ def solve1_old(N, A, B, U):
 	return min(req)
 
 def solve1_old2(N, A, B, U):
+	# Incorrect. e.g. 1 1 2 2 3 3, gives 7, should be 6
 	assert A == 1 and B == 2
 	req = []
 	for index, i in enumerate(U):
@@ -82,15 +83,73 @@ def solve1(N, A, B, U):
 				v[-1] -= u[-1]
 				u[-1] = 0
 			else:	# len(v) > len(u)
-				v[-2] += v[-1]
-				v[-3] += v[-1]
+				if len(v) >= 2:
+					v[-2] += v[-1]
+				if len(v) >= 3:
+					v[-3] += v[-1]
 				v[-1] = 0
 	for i in range(N + 1, 10000000000000000000000000000):
+		if try_root(i):
+			return i
+
+def solve2(N, A, B, U):
+	rem = set()
+	gcd = math.gcd(A, B)
+	for index, i in enumerate(U):
+		if i:
+			rem.add(index % gcd)
+	if len(rem) > 1:
+		return None
+
+	def try_root(r):
+		u = U.copy()
+		v = [0] * r + [1]
+		while u:
+			# print(u, v)
+			while u and u[-1] == 0:
+				u.pop()
+			while v and v[-1] == 0:
+				v.pop()
+			if not u:
+				return True
+			if not v:
+				return False
+			if len(v) < len(u):
+				return False
+			elif len(v) == len(u):
+				if v[-1] < u[-1]:
+					return False
+				v[-1] -= u[-1]
+				u[-1] = 0
+			else:	# len(v) > len(u)
+				if len(v) >= A + 1:
+					v[-1 - A] += v[-1]
+				if len(v) >= B + 1:
+					v[-1 - B] += v[-1]
+				v[-1] = 0
+
+	for i in range(N + gcd, 100000000000000000000000000000000, gcd):
 		if try_root(i):
 			return i
 	0/0
 
 # def solve2()
+
+if not 'dp':
+	while True:
+		import random
+		N = 3
+		U = [random.randrange(3) for _ in range(N + 1)]
+		U[0] = 0
+		U[-1] += 1
+		if sum(U) < 2:
+			continue
+		a = solve1(N, 1, 2, U)
+		b = solve1_old2(N, 1, 2, U)
+		if a != b:
+			print(N)
+			print(U)
+			print(a, b)
 
 T = int(input())
 for test in range(T):
@@ -99,10 +158,11 @@ for test in range(T):
 	if A == 1 and B == 2:
 		ans = solve1(N, A, B, U)
 	else:
-		0/0
+		ans = solve2(N, A, B, U)
 	if ans is None:
 		ans = 'IMPOSSIBLE'
 	print('Case #%d:' % (test + 1), ans)
 
-# 63 min, AC RC
+# 63 min, AC RE (5 attempts total)
+# 75 min, AC AC (6 attempts total)
 
