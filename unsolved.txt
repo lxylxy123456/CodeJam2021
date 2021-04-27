@@ -3,4 +3,6 @@ Qualification Round
 Round 1A
 	Prime Time				solved after competition
 	Hacked Exam				solved after competition
+Round 1B
+	Digit Blocks			solved after competition
 
