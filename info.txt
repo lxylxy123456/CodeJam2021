@@ -3,7 +3,7 @@ https://codingcompetitions.withgoogle.com/codejam
 Round name			Start					End						Rank	Tot
 Qualification Round	Mar 26 2021, 06:00 UTC	Mar 27 2021, 19:00 UTC	2470	748
 Round 1A			Apr 10 2021, 01:00 UTC	Apr 10 2021, 03:30 UTC	589		201
-Round 1B			Apr 25 2021, 16:00		Apr 25 2021, 18:30 UTC	-
+Round 1B			Apr 25 2021, 16:00		Apr 25 2021, 18:30 UTC	-		134
 Round 1C			May 1 2021, 09:00		May 1 2021, 11:30 UTC	-
 Round 2				May 15 2021, 14:00		May 15 2021, 16:30 UTC
 Round 3				Jun 5 2021, 14:00		Jun 5 2021, 16:30 UTC
