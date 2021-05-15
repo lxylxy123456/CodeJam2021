@@ -191,7 +191,7 @@ def inv_fact(n, cache=[]):
 def sol2(N, V):
 	import itertools
 	cur_visible = []	# [i] = the cooking order of i-th biggest visible
-	constraints = []
+	constraints = set()
 	for index, i in enumerate(V):
 		#j = V[index + 1]
 		#if j - i > 1:
@@ -206,9 +206,9 @@ def sol2(N, V):
 			upper_bound = cur_visible[-1]
 		cur_visible.append(index)
 		if lower_bound is not None:
-			constraints.append((lower_bound, index))
+			constraints.add((lower_bound, index))
 		if upper_bound is not None:
-			constraints.append((index, upper_bound))
+			constraints.add((index, upper_bound))
 		if lower_bound is not None and upper_bound is not None:
 			constraints.remove((lower_bound, upper_bound))
 		# print(cur_visible)
@@ -232,42 +232,74 @@ def sol2(N, V):
 		assert max(map(len, adj_list)) <= 1
 		s = [-1] * N
 		f = [-1] * N
-#		count = 0
-		def recu(i):
-			assert s[i] == -1 and f[i] == -1
-#			nonlocal count
-#			count += 1
-#			assert count < N + 10
-#			if count % 100 == 0:
-#				print(count, N)
-#				if count == 20000:
-#					import pdb; pdb.set_trace()
-			ss = 1
-			k = []
-			ff = 1
-			for j in adj_list_rev[i]:
-				recu(j)
-				ss += s[j]
-				ff *= f[j]
-				k.append(s[j])
-			ff *= fact(sum(k))
-			ff %= MOD
-			for j in k:
-				ff *= inv_fact(j)
+		if 0:
+	#		count = 0
+			def recu(i):
+				assert s[i] == -1 and f[i] == -1
+	#			nonlocal count
+	#			count += 1
+	#			assert count < N + 10
+	#			if count % 100 == 0:
+	#				print(count, N)
+	#				if count == 20000:
+	#					import pdb; pdb.set_trace()
+				ss = 1
+				k = []
+				ff = 1
+				for j in adj_list_rev[i]:
+					recu(j)
+					ss += s[j]
+					ff *= f[j]
+					ff %= MOD
+					k.append(s[j])
+				ff *= fact(sum(k))
 				ff %= MOD
-			s[i] = ss
-			f[i] = ff
-		root = None
-		for i in range(N):
-			if not adj_list[i]:
-				assert root is None
-				root = i
-		assert root is not None
-		recu(root)
-		# print(adj_list)
-		# print(f)
-		# print(s)
-		return f[root] % (10**9 + 7)
+				for j in k:
+					ff *= inv_fact(j)
+					ff %= MOD
+				s[i] = ss
+				f[i] = ff
+			root = None
+			for i in range(N):
+				if not adj_list[i]:
+					assert root is None
+					root = i
+			assert root is not None
+			recu(root)
+			# print(adj_list)
+			# print(f)
+			# print(s)
+			return f[root] % (10**9 + 7)
+		elif 1:
+			order = []
+			def dfs(i):
+				for j in adj_list_rev[i]:
+					dfs(j)
+				order.append(i)
+			root = None
+			for i in range(N):
+				if not adj_list[i]:
+					assert root is None
+					root = i
+			assert root is not None
+			dfs(root)
+			for i in order:
+				ss = 1
+				k = []
+				ff = 1
+				for j in adj_list_rev[i]:
+					ss += s[j]
+					ff *= f[j]
+					ff %= MOD
+					k.append(s[j])
+				ff *= fact(sum(k))
+				ff %= MOD
+				for j in k:
+					ff *= inv_fact(j)
+					ff %= MOD
+				s[i] = ss
+				f[i] = ff
+			return f[root] % (10**9 + 7)
 
 T = int(input())
 for test in range(T):
