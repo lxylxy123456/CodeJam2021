@@ -90,13 +90,14 @@ void recu(int i, std::vector<int> &s, std::vector<INT> &f,
 	f[i] = ff;
 }
 
+int initialized = false;
+std::vector<INT> fact = {1}, inv_fact = {1};
+
 int sol2(int N, int *V) {
-	static int initialized = false;
-	static INT fact[10010] = {1}, inv_fact[10010] = {1};
 	if (!initialized) {
-		for (int i = 1; i < 10010; i++) {
-			fact[i] = fact[i - 1] * i % MOD;
-			inv_fact[i] = pow_mod(fact[i], MOD - 2);
+		for (int i = 1; i < 100010; i++) {
+			fact.push_back(fact[i - 1] * i % MOD);
+			inv_fact.push_back(pow_mod(fact[i], MOD - 2));
 		}
 	}
 	std::vector<int> cur_visible;
@@ -140,7 +141,33 @@ int sol2(int N, int *V) {
 	assert(root != -1);
 	std::vector<int> s(N, -1);
 	std::vector<INT> f(N, -1);
-	recu(root, s, f, adj_list_rev, fact, inv_fact);
+	// recu(root, s, f, adj_list_rev, fact, inv_fact);
+	std::vector<int> order;
+	std::vector<int> fringe = {root};
+	while (fringe.size()) {
+		int i = fringe.back();
+		fringe.pop_back();
+		order.push_back(i);
+		for (int j = 0; j < adj_list_rev[i].size(); j++) {
+			fringe.push_back(adj_list_rev[i][j]);
+		}
+	}
+	for (auto ii = order.rbegin(); ii != order.rend(); ii++) {
+		int &i = *ii;
+		assert(s[i] == -1 && f[i] == -1);
+		int ss = 1;
+		INT ff = 1;
+		int k = 0;
+		for (int j = 0; j < adj_list_rev[i].size(); j++) {
+			ss += s[adj_list_rev[i][j]];
+			ff = ff * f[adj_list_rev[i][j]] % MOD;
+			k += s[adj_list_rev[i][j]];
+			ff = ff * inv_fact[s[adj_list_rev[i][j]]] % MOD;
+		}
+		ff = ff * fact[k] % MOD;
+		s[i] = ss;
+		f[i] = ff;
+	}
 	return f[root];
 }
 

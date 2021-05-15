@@ -6,5 +6,5 @@ Round 1A
 Round 1B
 	Digit Blocks			solved after competition
 Round 2
-	Hidden Pancakes			unsolved
+	Hidden Pancakes			solved after competition
 	Retiling				unsolved
