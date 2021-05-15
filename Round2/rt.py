@@ -56,9 +56,10 @@ def path_search(T):
 #		return 0
 	searched = set()
 	fringe = []
-	heapq.heappush(fringe, (0, T))
+	heapq.heappush(fringe, (score, 0, T))
+	ans = 3**3**3
 	while True:
-		dist, t = heapq.heappop(fringe)
+		approx, dist, t = heapq.heappop(fringe)
 		#print(dist)
 		#for i in t:
 		#	print(end='  ');
@@ -71,12 +72,15 @@ def path_search(T):
 		#			for j in i: print(end=j)
 		#			print()
 		#		print()
-			return dist
+			ans = min(dist, ans)
+			break	# probably WA
 		if t in searched:
 			continue
 		searched.add(t)
 		for n, c in next_states(t):
-			heapq.heappush(fringe, (dist + c, n))
+			dc = dist + c
+			heapq.heappush(fringe, (dc + score(n), dc, n))
+	return ans
 
 T = int(input())
 for test in range(T):

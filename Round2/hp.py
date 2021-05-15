@@ -10,7 +10,7 @@ try:
 except Exception:
 	pass
 
-# import math, sys
+import math
 # sys.setrecursionlimit(100000000)
 # from collections import defaultdict
 # A = list(map(int, input().split()))
@@ -37,14 +37,56 @@ def sol(N, V):
 		if upper_bound is not None:
 			constraints.append((index, upper_bound))
 		# print(cur_visible)
-	# print(constraints)
-	ans = 0
-	for p in itertools.permutations(range(N)):
-		good = True
+	if 1:
+		ans = 0
+		for p in itertools.permutations(range(N)):
+			good = True
+			for i, j in constraints:
+				good = good and p.index(i) < p.index(j)
+			ans += int(good)
+		return ans
+	if 1:
+		for i in range(N):
+			constraints.append((N, i))
+			constraints.append((i, N + 1))
+		N += 2
+		adj_list = []
+		adj_list_rev = []
+		for i in range(N):
+			adj_list.append([])
+			adj_list_rev.append([])
 		for i, j in constraints:
-			good = good and p.index(i) < p.index(j)
-		ans += int(good)
-	return ans
+			adj_list[i].append(j)
+			adj_list_rev[j].append(i)
+		print(adj_list)
+		print(adj_list_rev)
+		color = [0] * N
+		order = []
+		def dfs(s):
+			if color[s] != 0:
+				return
+			color[s] = 1
+			for t in adj_list[s]:
+				dfs(t)
+			order.append(s)
+		dfs(N - 2)
+		print(order)
+		ancestor = [None] * N
+		ancestor[N - 1] = set()
+		for i in reversed(order):
+			ancestor[i] = set()
+			for j in adj_list_rev[i]:
+				ancestor[i].update(ancestor[j])
+				ancestor[i].add(j)
+		perm = [None] * N
+		perm[N - 1] = 0
+		for i in reversed(order):
+			perm = 1
+			for j in adj_list_rev[i]:
+				perm = math.factorial(perm + l) // \
+						(math.factorial(l) * math.factorial(perm))
+		print(ancestor)
+	print(constraints)
 
 T = int(input())
 for test in range(T):
