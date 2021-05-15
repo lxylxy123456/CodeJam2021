@@ -23,7 +23,7 @@ def ll(T):
 	return list(map(list, T))
 
 def score(D):
-	return sum(map(sum, D))
+	return sum(map(lambda d, b: sum(map(lambda i, j: i != j, d, b)), D, B))
 
 def neighbors(r, c, bidir=2):
 	if r > 0:
@@ -41,38 +41,42 @@ def next_states(D):
 	DD = ll(D)
 	for i in range(R):
 		for j in range(C):
-			if DD[i][j]:
-				DD[i][j] = False
+			if D[i][j] != B[i][j]:
+				DD[i][j] = B[i][j]
 				yield tt(DD), F
 				for r, c in neighbors(i, j, bidir=0):
-					if DD[r][c]:
-						DD[r][c] = False
+					if D[r][c] != B[r][c] and B[r][c] == D[i][j]:
+						DD[r][c] = B[r][c]
 						yield tt(DD), S
-						DD[r][c] = True
-				DD[i][j] = True
+						DD[r][c] = D[r][c]
+				DD[i][j] = D[i][j]
 
 def path_search(T):
 #	if score(T) == 0:
 #		return 0
+	searched = set()
 	fringe = []
-	heapq.heappush(fringe, (0, T, ()))
+	heapq.heappush(fringe, (0, T))
 	while True:
-		dist, t, h = heapq.heappop(fringe)
-		print(dist)
-		for i in t:
-			print(end='  ')
-			for j in i: print(end='01'[j])
-			print()
+		dist, t = heapq.heappop(fringe)
+		#print(dist)
+		#for i in t:
+		#	print(end='  ');
+		#	for j in i: print(end=j);
+		#	print()
 		if score(t) == 0:
-			for t in h:
-				for i in t:
-					print(end='  ')
-					for j in i: print(end='01'[j])
-					print()
-				print()
+		#	for t in h:
+		#		for i in t:
+		#			print(end='  ')
+		#			for j in i: print(end=j)
+		#			print()
+		#		print()
 			return dist
+		if t in searched:
+			continue
+		searched.add(t)
 		for n, c in next_states(t):
-			heapq.heappush(fringe, (dist + c, n, (t, *h)))
+			heapq.heappush(fringe, (dist + c, n))
 
 T = int(input())
 for test in range(T):
@@ -83,9 +87,6 @@ for test in range(T):
 	B = []
 	for _ in range(R):
 		B.append(list(input()))
-	D = []
-	for i, j in zip(A, B):
-		D.append(list(map(lambda x, y: x != y, i, j)))
-	ans = path_search(tt(D))
+	ans = path_search(tt(A))
 	print('Case #%d:' % (test + 1), ans)
 
