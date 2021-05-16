@@ -7,4 +7,4 @@ Round 1B
 	Digit Blocks			solved after competition
 Round 2
 	Hidden Pancakes			solved after competition
-	Retiling				unsolved
+	Retiling				solved after competition
