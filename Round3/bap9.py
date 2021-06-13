@@ -82,6 +82,6 @@ for test in range(T):
 			dd.remove(lg)
 			sm2 = dd.pop(0)
 			ans = (sm * 10 + sm2 - lg) * 10**e - max_abs(tuple(dd))
-
+    # UNSOLVED
 	print('Case #%d:' % (test + 1), ans)
 
